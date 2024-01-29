@@ -29,12 +29,21 @@ type Game struct {
 }
 
 func (g *Game) display() {
+	for i := 0; i <= g.length; i++ {
+		fmt.Print("---")
+	}
+	fmt.Println("-")
 	for y := 0; y < g.height; y++ {
+		fmt.Print("|  ")
 		for x := 0; x < g.length; x++ {
 			fmt.Print(g.panel[y][x] + "  ")
 		}
-		fmt.Println("")
+		fmt.Println("|")
 	}
+	for i := 0; i <= g.length; i++ {
+		fmt.Print("---")
+	}
+	fmt.Println("-")
 }
 
 func (g *Game) updateItems(snakeLastPos *pos) {
@@ -48,7 +57,26 @@ func (g *Game) updateItems(snakeLastPos *pos) {
 }
 
 func (g *Game) generateBean() {
-	g.bean = &bean{&pos{rand.Intn(g.length), rand.Intn(g.height)}}
+	occupiedPos := make(map[pos]interface{})
+	for h := 0; h < g.height; h++ {
+		for l := 0; l < g.length; l++ {
+			occupiedPos[pos{l, h}] = nil
+		}
+	}
+	for loc := g.snake.locations.Front(); loc != nil; loc = loc.Next() {
+		pos := loc.Value.(pos)
+		delete(occupiedPos, pos)
+	}
+	restPosNum := len(occupiedPos)
+	choice := rand.Intn(restPosNum)
+	for pos := range occupiedPos {
+		if choice != 0 {
+			choice -= 1
+		}
+		g.bean = &bean{&pos}
+		return
+	}
+	//g.bean = &bean{&pos{rand.Intn(g.length), rand.Intn(g.height)}}
 }
 
 func (g *Game) updatePanel() {
