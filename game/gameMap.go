@@ -28,6 +28,7 @@ type Game struct {
 	gameOver       bool
 }
 
+// display plant the game map with snake and bean on
 func (g *Game) display() {
 	for i := 0; i <= g.length; i++ {
 		fmt.Print("---")
@@ -46,6 +47,7 @@ func (g *Game) display() {
 	fmt.Println("-")
 }
 
+// updateItems check whether the snake eats the bean and generate a new bean if it does
 func (g *Game) updateItems(snakeLastPos *pos) {
 	snakeHead := g.snake.getHead()
 	if !reflect.DeepEqual(snakeHead, g.bean.location) {
@@ -56,6 +58,7 @@ func (g *Game) updateItems(snakeLastPos *pos) {
 	g.generateBean()
 }
 
+// generateBean generate a new bean at the position where snake not occupies
 func (g *Game) generateBean() {
 	occupiedPos := make(map[pos]interface{})
 	for h := 0; h < g.height; h++ {
@@ -63,7 +66,7 @@ func (g *Game) generateBean() {
 			occupiedPos[pos{l, h}] = nil
 		}
 	}
-	for loc := g.snake.locations.Front(); loc != nil; loc = loc.Next() {
+	for loc := g.snake.units.Front(); loc != nil; loc = loc.Next() {
 		pos := loc.Value.(pos)
 		delete(occupiedPos, pos)
 	}
@@ -76,13 +79,13 @@ func (g *Game) generateBean() {
 		g.bean = &bean{&pos}
 		return
 	}
-	//g.bean = &bean{&pos{rand.Intn(g.length), rand.Intn(g.height)}}
 }
 
+// updatePanel update the game panel
 func (g *Game) updatePanel() {
 	beanX, beanY := getValue(g.bean.location)
 	g.panel[beanY][beanX] = beanIcon
-	for loc := g.snake.locations.Front(); loc != nil; loc = loc.Next() {
+	for loc := g.snake.units.Front(); loc != nil; loc = loc.Next() {
 		pos := loc.Value.(pos)
 		g.panel[pos.y][pos.x] = snakeIcon
 	}
@@ -100,12 +103,14 @@ func (g *Game) updatePanel() {
 
 }
 
+// clearLastPos clean the last footprint of snake
 func (g *Game) clearLastPos(snakeLastPos *pos) {
 	lastX, lastY := getValue(snakeLastPos)
 	g.panel[lastY][lastX] = gameMapIcon
 
 }
 
+// checkBoundary check whether the snake hit the map boundary
 func (g *Game) checkBoundary() bool {
 	headPos := g.snake.getHead()
 	if headPos == nil {
@@ -153,7 +158,7 @@ func (g *Game) StartGame() {
 				g.gameOver = true
 			}
 			if g.gameOver {
-				fmt.Printf("Game over, Your score is %v\n", g.score)
+				fmt.Printf("Game is over, Your score is %v\n", g.score)
 				return
 			}
 			tailPos := lastPos.(pos)

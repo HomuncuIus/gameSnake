@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	defaultLength = 10
-	defaultHeight = 10
+	defaultLength = 15
+	defaultHeight = 15
 )
 
 func main() {
