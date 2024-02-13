@@ -126,7 +126,7 @@ func (g *Game) checkBoundary() bool {
 }
 
 func (g *Game) getDurationFactor() int {
-	return max(maxDurationFactor, initialDurationFactor-g.score*10)
+	return maxInt(maxDurationFactor, initialDurationFactor-g.score*10)
 }
 
 func (g *Game) StartGame() {
@@ -211,7 +211,7 @@ func keyInput(g *Game) {
 	}()
 }
 
-func max(a, b int) int {
+func maxInt(a, b int) int {
 	if a >= b {
 		return a
 	}
